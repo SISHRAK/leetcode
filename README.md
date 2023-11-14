@@ -5,20 +5,17 @@
 * [1] Easy
 * [2] Medium
 * [3] Hard
-* [4] Very Hard
 
 ## C++ Solutions
 
 * [1] Easy
 * [2] Medium
 * [3] Hard
-* [4] Very Hard
 
 ## How to use
 
-- To run a solution, click on the link provided in the description.
-- If you want to run a specific test case, click on the `Test` button next to the test case number.
-- To view the source code, click on the `View Code` button next to the test case number.
+- To run a solution, git clone and find your function.
+- If you want to run a specific test case, in main you can write tests.
 
 ## Contribution Guidelines
 
@@ -30,4 +27,5 @@
 
 ## Contact Information
 
-If you have any questions or suggestions, please feel free to contact me at [email protected]
+If you have any questions or suggestions, please feel free to contact me at barashko04@gmail.com
+
