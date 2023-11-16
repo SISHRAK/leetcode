@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.HashSet;
 
 //  Definition for a binary tree node.
 class TreeNode {
@@ -109,5 +110,80 @@ class Solution {
         int left = maxDepth(root.left);
         int right = maxDepth(root.right);
         return Math.max(left, right) + 1;
+    }
+    public int findTheDistanceValue(int[] arr1, int[] arr2, int d) {
+        int ans = 0;
+        for(int i = 0; i < arr1.length;i++){
+            for(int j = 0; j < arr2.length;j++){
+                if(Math.abs(arr1[i] - arr2[j]) <= d){
+                    ans++;
+                }
+            }
+        }
+        return arr1.length - ans;
+    }
+    public int countNumbersWithUniqueDigits(int n) {
+        if (n == 0){
+            return 1;
+        }
+        if(n == 1){
+            return 10;
+        }
+        return (int) Math.pow(10, n) - 9;
+    }
+    public boolean increasingTriplet(int[] nums) {
+        int a = Integer.MAX_VALUE;
+        int b = Integer.MAX_VALUE;
+        for(int i = 0; i < nums.length;i++){
+            if(nums[i] <= a){
+                a = nums[i];
+            }
+            else if(nums[i] < b){
+                b = nums[i];
+            }
+            else if(nums[i] > b){
+                return true;
+            }
+        }
+        return false;
+    }
+//    public int lengthOfLIS(int[] nums) {
+//        int ans = 0;
+//        int buf = 0;
+//        for(int i = 0; i < nums.length;i++){
+//            for(int j = i; j < nums.length;j++){
+//                if()
+//            }
+//
+//
+//        }
+//    }
+    public int findDuplicate(int[] nums) {
+        HashSet<Integer> set = new HashSet<>();
+        for(int num : nums){
+            if(set.contains(num)){
+                return num;
+            }
+            set.add(num);
+        }
+        return -1;
+    }
+    public int integerBreak(int n) {
+        if(n <= 1){
+            return 0;
+        }
+        if (n == 2) {
+            return 1;
+        }
+        if(n == 3){
+            return 2;
+        }
+        int ans = 1;
+        while(n > 4){
+            ans *= 3;
+            n -= 3;
+        }
+        ans *= n;
+        return ans;
     }
 }
