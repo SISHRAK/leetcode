@@ -12,6 +12,23 @@
 * [2] Medium
 * [3] Hard
 
+## Kotlin Solutions
+
+* [1] Easy
+* [2] Medium
+* [3] Hard
+
+## Python Solutions
+
+* [1] Easy
+* [2] Medium
+* [3] Hard
+
+## MySQL Solutions
+
+* [1] Easy
+* [2] Medium
+* [3] Hard
 ## How to use
 
 - To run a solution, git clone and find your function.
