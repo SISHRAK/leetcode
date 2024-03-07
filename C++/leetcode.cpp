@@ -809,6 +809,92 @@ public:
         return ans;
     }
 
+    double minAreaFreeRect(vector<vector<int>> &points) {
+        if (points.size() < 4) {
+            return 0;
+        }
+        double ans = 0.0;
+        int x0, y0;
+        int x1, y1;
+        int x2, y2;
+        int x3, y3;
+        int Lx1, Lx2;
+        int Ly1, Ly2;
+        for (int i = 0; i < points.size() - 3; i++) {
+            x0 = points[i][0];
+            y0 = points[i][1];
+            for (int j = i + 1; j < points.size(); j++) {
+                x1 = points[j][0];
+                y1 = points[j][1];
+                for (int k = j + 1; k < points.size(); k++) {
+                    x2 = points[k][0];
+                    y2 = points[k][1];
+                    Lx1 = x1 - x0;
+                    Ly1 = y1 - y0;
+
+                    Lx2 = x2 - x0;
+                    Ly2 = y2 - y0;
+                    int dotProd = Lx1 * Lx2 + Ly1 * Ly2;
+                    if (dotProd != 0) {
+                        continue;
+                    }
+                    bool fl = true;
+                    for (int n = 0; n < points.size(); n++) {
+                        x3 = points[n][0];
+                        y3 = points[n][1];
+                        if ((x3 == x0 + Lx1 + Lx2) && (y3 == y0 + Ly1 + Ly2)) {
+                            fl = false;
+                            break;
+                        }
+                    }
+                    if (fl) {
+                        continue;
+                    }
+                    double area = (double) abs(Lx1 * Ly2 - Ly1 * Lx2);
+                    if (area == 0.0) {
+                        area = ans;
+                    } else {
+                        area = area < ans ? area : ans;
+                    }
+
+
+                }
+            }
+        }
+        return ans;
+    }
+
+    int minCostToMoveChips(vector<int> &position) {
+        int odd = 0;
+        int ev = 0;
+        for (int i = 0; i < position.size(); i++) {
+            if (position[i] % 2 == 0) {
+                ev++;
+            } else {
+                odd++;
+            }
+
+        }
+        return min(ev, odd);
+    }
+
+    int maxArea(vector<int> &height) {
+        int ans = 0;
+        int l = 0, r = height.size() - 1;
+        while (l <= r) {
+            int minn = 10329084234;
+            minn = min(min(height[l],height[r]), minn);
+            ans = max(minn*(r-l), ans);
+            if(height[l] > height[r]){
+                r--;
+            } else {
+                l++;
+            }
+        }
+        return ans;
+    }
+
+
 };
 
 
