@@ -1259,6 +1259,499 @@ public:
         long long int min = -100000000000, max = 10000000000;
         return chck(root, min, max);
     }
+
+    void dfs(int i, int j, vector<vector<char>> &grid) {
+        grid[i][j] = 0;
+        int n = grid.size();
+        int m = grid[0].size();
+
+        if (i - 1 >= 0 && grid[i - 1][j] == '1') dfs(i - 1, j, grid);
+        if (i + 1 < n && grid[i + 1][j] == '1') dfs(i + 1, j, grid);
+        if (j - 1 >= 0 && grid[i][j - 1] == '1') dfs(i, j - 1, grid);
+        if (j + 1 < m && grid[i][j + 1] == '1') dfs(i, j + 1, grid);
+
+    }
+
+    int numIslands(vector<vector<char>> &grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == '1') {
+                    ans++;
+                    dfs(i, j, grid);
+                }
+            }
+        }
+        return ans;
+    }
+
+    int maxPower(string s) {
+        int cnt = 1, ans = 1;
+        char buf = s[0];
+        for (int i = 1; i < s.size(); i++) {
+            char cur = s[i];
+            if (cur == buf) cnt++;
+            else {
+                buf = cur;
+                cnt = 1;
+            }
+            ans = max(ans, cnt);
+        }
+        return ans;
+    }
+
+    vector<vector<int>> intervalIntersection(vector<vector<int>> &firstList, vector<vector<int>> &secondList) {
+        vector<vector<int>> ans;
+        for (int i = 0, j = 0; i < firstList.size() && j < secondList.size();) {
+            if (firstList[i][1] < secondList[j][0]) {
+                i++;
+            } else if (secondList[j][1] < firstList[i][0]) {
+                j++;
+            } else {
+                ans.push_back({max(firstList[i][0], secondList[j][0]), min(firstList[i][1], secondList[j][1])});
+                if (firstList[i][1] < secondList[j][1]) {
+                    i++;
+                } else {
+                    j++;
+                }
+            }
+        }
+        return ans;
+    }
+
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+        auto *dum = new ListNode();
+        ListNode *temp = dum;
+        int curry = 0;
+        while (l1 != NULL || l2 != NULL || curry) {
+            int sum = 0;
+            if (l1 != NULL) {
+                sum += l1->val;
+                l1 = l1->next;
+            }
+            if (l2 != NULL) {
+                sum += l2->val;
+                l2 = l2->next;
+            }
+            sum += curry;
+            curry = sum / 10;
+            ListNode *newnode = new ListNode(sum % 10);
+            temp->next = newnode;
+            temp = temp->next;
+        }
+        return dum->next;
+    }
+
+    void merge(vector<int> &nums1, int m, vector<int> &nums2, int n) {
+        for (int j = 0, i = m; j < n; j++) {
+            nums1[i] = nums2[j];
+            i++;
+        }
+        sort(nums1.begin(), nums1.end());
+    }
+
+    ListNode *mergeTwoLists(ListNode *list1, ListNode *list2) {
+        if (list1 == NULL) {
+            return list2;
+        }
+        if (list2 == NULL) {
+            return list1;
+        }
+        if (list1->val < list2->val) {
+            list1->next = mergeTwoLists(list1->next, list2);
+            return list1;
+        } else {
+            list2->next = mergeTwoLists(list1, list2->next);
+            return list2;
+        }
+    }
+
+    int longestOnes(vector<int> &nums, int k) {
+        int start = 0;
+        int i = 0;
+        while (start < nums.size()) {
+            if (nums[start] == 0) {
+                k--;
+            }
+            if (k < 0) {
+                if (nums[i] == 0) {
+                    k++;
+                }
+                i++;
+            }
+            start++;
+        }
+        return start - i;
+    }
+
+    string longestPalindrome(string s) {
+        if (s.empty()) {
+            return "";
+        }
+        int start = 0;
+        int end = 0;
+        for (int i = 0; i < s.size(); i++) {
+            int odd = ExpandAroundCenter(s, i, i);
+            int even = ExpandAroundCenter(s, i, i + 1);
+            int max_len = max(odd, even);
+            if (max_len > end - start) {
+                start = i - (max_len - 1) / 2;
+                end = i + max_len / 2;
+            }
+        }
+        return s.substr(start, end - start + 1);
+    }
+
+    int ExpandAroundCenter(string s, int left, int right) {
+        while (left >= 0 && right < s.size() && s[left] == s[right]) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
+    }
+
+    int numJewelsInStones(string jewels, string stones) {
+        int count = 0;
+        for (char jewel: jewels) {
+            for (char stone: stones) {
+                if (jewel == stone) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q) {
+        if (root == NULL) {
+            return NULL;
+        }
+        if (root == p || root == q) {
+            return root;
+        }
+        TreeNode *l = lowestCommonAncestor(root->left, p, q);
+        TreeNode *r = lowestCommonAncestor(root->right, p, q);
+        if (l && r) {
+            return root;
+        }
+        if (l) {
+            return l;
+        }
+        if (r) {
+            return r;
+        }
+        return NULL;
+    }
+
+    vector<int> intersect(vector<int> &nums1, vector<int> &nums2) {
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
+        int i = 0, j = 0;
+        vector<int> ans;
+        while (i < nums1.size() && j < nums2.size()) {
+            if (nums1[i] == nums2[j]) {
+                ans.push_back(nums1[i]);
+                i++, j++;
+            } else if (nums1[i] < nums2[j]) {
+                i++;
+            } else {
+                j++;
+            }
+        }
+        return ans;
+    }
+
+    int missingNumber(vector<int> &nums) {
+        int n = nums.size() + 1;
+        int t = (n * (n - 1)) / 2;
+        for (auto x: nums) {
+            t -= x;
+        }
+        return t;
+    }
+
+    int evalRPN(vector<string> &tokens) {
+        stack<string> st;
+        for (auto s: tokens) {
+            if (isOperator(s)) {
+                int res = 0;
+                int el2 = stoi(st.top());
+                st.pop();
+                int el1 = stoi(st.top());
+                st.pop();
+                if (s == "+") {
+                    res = el1 + el2;
+                }
+                if (s == "*") {
+                    res = el1 * el2;
+                }
+                if (s == "-") {
+                    res = el1 - el2;
+                }
+                if (s == "/") {
+                    res = el1 / el2;
+                }
+                st.push(to_string(res));
+            } else {
+                st.push(s);
+            }
+        }
+        return stoi(st.top());
+    }
+
+    bool isOperator(string s) {
+        return (s == "-" || s == "+" || s == "/" || s == "*");
+    }
+
+    double findMedianSortedArrays(vector<int> &nums1, vector<int> &nums2) {
+        int n = nums1.size();
+        int m = nums2.size();
+        int i = 0, j = 0, m1 = 0, m2 = 0;
+        for (int count = 0; count <= (n + m) / 2; count++) {
+            m2 = m1;
+            if (i != n && j != m) {
+                if (nums1[i] > nums2[j]) {
+                    m1 = nums2[j++];
+                } else {
+                    m1 = nums1[i++];
+                }
+            } else if (i < n) {
+                m1 = nums1[i++];
+            } else {
+                m1 = nums2[j++];
+            }
+        }
+        if ((n + m) % 2 == 1) {
+            return static_cast<double>(m1);
+        } else {
+            double ans = static_cast<double>(m1) + static_cast<double>(m2);
+            return ans / 2.0;
+        }
+    }
+
+    string simplifyPath(string path) {
+        stack<string> st;
+        string ans = "";
+        for (int i = 0; i < path.size(); i++) {
+            if (path[i] == '/') {
+                continue;
+            }
+            string temp;
+            while (i < path.size() && path[i] != '/') {
+                temp += path[i];
+                i++;
+            }
+            if (temp == ".") {
+                continue;
+            } else if (temp == "..") {
+                if (!st.empty()) {
+                    st.pop();
+                }
+            } else {
+                st.push(temp);
+            }
+        }
+        while (!st.empty()) {
+            ans = '/' + st.top() + ans;
+            st.pop();
+        }
+        if (ans.size() == 0) {
+            return "/";
+        }
+        return ans;
+    }
+
+    bool isSubsequence(string s, string t) {
+        int pos = 0;
+        for (char i: t) {
+            if (i == s[pos]) {
+                pos++;
+            }
+        }
+        return pos == s.size();
+    }
+
+    vector<int> sortedSquares(vector<int> &nums) {
+        int n = nums.size();
+        vector<int> ans(n);
+        for (int i = 0; i < n; i++) {
+            nums[i] = nums[i] * nums[i];
+        }
+        int left = 0;
+        int right = n - 1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (nums[left] > nums[right]) {
+                ans[i] = nums[left];
+                left++;
+            } else {
+                ans[i] = nums[right];
+                right--;
+            }
+        }
+        return ans;
+    }
+
+    ListNode *removeNthFromEnd(ListNode *head, int n) {
+        ListNode *dum = new ListNode(0);
+        dum->next = head;
+        ListNode *first = dum;
+        ListNode *second = dum;
+
+        for (int i = 0; i <= n; i++) {
+            first = first->next;
+        }
+        while (first != NULL) {
+            first = first->next;
+            second = second->next;
+        }
+        ListNode *temp = second->next;
+        second->next = second->next->next;
+        delete temp;
+        return dum->next;
+    }
+
+    int numSquares(int n) {
+        vector<int> dp(n + 1, INT_MAX);
+        dp[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j * j <= i; j++) {
+                dp[i] = min(dp[i], dp[i - j * j] + 1);
+            }
+        }
+        return dp[n];
+    }
+
+    int maximalRectangle(vector<vector<char>> &matrix) {
+
+    }
+
+    int search(vector<int> &nums, int target) {
+        int l = 0, r = nums.size() - 1;
+        while (l <= r) {
+            int m = (l + r) / 2;
+            if (nums[m] == target) {
+                return m;
+            }
+            if (nums[l] <= nums[m]) {
+                if (nums[l] <= target && target < nums[m]) {
+                    r = m - 1;
+                } else {
+                    l = m + 1;
+                }
+            } else {
+                if (nums[m] < target && target <= nums[r]) {
+                    l = m + 1;
+                } else {
+                    r = m - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    vector<int> twoSums(vector<int> &numbers, int target) {
+        int n = numbers.size();
+        int l = 0;
+        int r = n - 1;
+        while(l <= r){
+            if(numbers[l] + numbers[r] == target){
+                return {l+1, r+1};
+            } else if(numbers[l] + numbers[r] > target){
+                r--;
+            } else{
+                l++;
+            }
+        }
+        return {};
+    }
+
+};
+
+class NestedInteger {
+public:
+    // Return true if this NestedInteger holds a single integer, rather than a nested list.
+    bool isInteger() const;
+
+    // Return the single integer that this NestedInteger holds, if it holds a single integer
+    // The result is undefined if this NestedInteger holds a nested list
+    int getInteger() const;
+
+    // Return the nested list that this NestedInteger holds, if it holds a nested list
+    // The result is undefined if this NestedInteger holds a single integer
+    const vector<NestedInteger> getList() const;
+};
+
+
+class NestedIterator {
+    vector<int> flatList;
+    int iterator;
+public:
+    void flattenList(vector<NestedInteger> nestedList) {
+        for (NestedInteger ele: nestedList) {
+            if (ele.isInteger()) {
+                flatList.push_back(ele.getInteger());
+            } else {
+                flattenList(ele.getList());
+            }
+        }
+    }
+
+    NestedIterator(std::vector<NestedInteger> &nestedList) {
+        iterator = 0;
+        flattenList(nestedList);
+    }
+
+    int next() {
+        if (hasNext()) {
+            return flatList[iterator++];
+        } else {
+            return NULL;
+        }
+    }
+
+    bool hasNext() {
+        return iterator < flatList.size();
+    }
+};
+
+class MyQueue {
+private:
+    stack<int> stack1, stack2;
+public:
+    MyQueue() {
+
+    }
+
+    void push(int x) {
+        stack1.push(x);
+    }
+
+    void transferElements() {
+        if (stack2.empty()) {
+            while (!stack1.empty()) {
+                stack2.push(stack1.top());
+                stack1.pop();
+            }
+        }
+    }
+
+    int pop() {
+        transferElements();
+        int el = stack2.top();
+        stack2.pop();
+        return el;
+    }
+
+    int peek() {
+        transferElements();
+        return stack2.top();
+    }
+
+    bool empty() {
+        return stack2.empty() && stack1.empty();
+    }
 };
 
 int main() {
