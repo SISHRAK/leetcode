@@ -2,8 +2,10 @@
 #include <vector>
 #include <stack>
 #include <string>
+#include <map>
 #include <math.h>
 #include <unordered_map>
+#include <queue>
 #include <sstream>
 
 using namespace std;
@@ -245,7 +247,7 @@ public:
         return prev;
     }
 
-    void moveZeroes(vector<int> &nums) {
+    [[maybe_unused]] void moveZeroes(vector<int> &nums) {
         int cnt = 0;
         int n = nums.size();
         for (int i = 0; i < n; i++) {
@@ -883,9 +885,9 @@ public:
         int l = 0, r = height.size() - 1;
         while (l <= r) {
             int minn = 10329084234;
-            minn = min(min(height[l],height[r]), minn);
-            ans = max(minn*(r-l), ans);
-            if(height[l] > height[r]){
+            minn = min(min(height[l], height[r]), minn);
+            ans = max(minn * (r - l), ans);
+            if (height[l] > height[r]) {
                 r--;
             } else {
                 l++;
@@ -894,9 +896,370 @@ public:
         return ans;
     }
 
+    int longestSubarray_1(vector<int> &nums) {
+        int ans = 0;
+        int maxx_ = 0;
+        int i = 0, j = 0;
+        int ct0 = 0;
+        while (i < nums.size()) {
+            if (nums[i] == 0) {
+                ct0++;
+                while (ct0 > 1) {
+                    if (nums[j] == 0) {
+                        ct0--;
+                    } else {
+                        ans--;
+                    }
+                    j++;
+                }
+            } else {
+                ans++;
+                maxx_ = max(ans, maxx_);
+            }
+            i++;
+        }
+        if (maxx_ == nums.size()) {
+            return --maxx_;
+        } else {
+            return maxx_;
+        }
+    }
 
+    vector<string> summaryRangess(vector<int> &nums) {
+        vector<string> ans;
+        int n = nums.size();
+        if (n == 0) {
+            return ans;
+        }
+        int a = nums[0];
+        for (int i = 1; i < n; i++) {
+            if (i == n - 1 || nums[i] + 1 != nums[i + 1]) {
+                if (nums[i] != a) {
+                    ans.push_back(to_string(a) + "->" + to_string(nums[i]));
+                } else {
+                    ans.push_back(to_string(a));
+                }
+            }
+            if (i != n - 1) {
+                a = nums[i + 1];
+            }
+        }
+        return ans;
+    }
+
+    static int compress(vector<char> &chars) {
+        int ans = 0;
+        for (int i = 0; i < chars.size(); i++) {
+            int cnt = 0;
+            char let = chars[i];
+            while (i < chars.size() && chars[i] == let) {
+                ++cnt;
+                ++i;
+            }
+            chars[ans++] = let;
+            if (cnt > 1) {
+                for (auto key: to_string(cnt)) {
+                    chars[ans++] = key;
+                }
+            }
+
+        }
+        return chars.size();
+    }
+
+    bool isPalindromee(string s) {
+        string s1 = "";
+        for (char &i: s) {
+            if (isupper(i)) {
+                i = tolower(i);
+            }
+            if (isalnum(i)) {
+                s1.push_back(i);
+            }
+        }
+        if (string(s1.rbegin(), s1.rend()) == s1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    int subarraySum(vector<int> &nums, int k) {
+        map<int, int> anss;
+        int ans = 0;
+        int sum = 0;
+        anss[sum] = 1;
+        for (auto e: nums) {
+            sum += e;
+            ans += anss[sum - k];
+            anss[sum]++;
+        }
+        return ans;
+    }
+
+    void moveZeroess(vector<int> &nums) {
+        int cnt = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] != 0) {
+                nums[cnt++] = nums[i];
+            }
+        }
+        while (cnt < nums.size()) {
+            nums[cnt++] = 0;
+        }
+    }
+
+    vector<vector<string>> groupAnagramss(vector<string> &strs) {
+        map<string, vector<string>> mapp;
+        for (auto s: strs) {
+            string str = s;
+            sort(str.begin(), str.end());
+            mapp[str].push_back(s);
+        }
+        vector<vector<string>> ans;
+        for (auto k: mapp) {
+            ans.push_back(k.second);
+        }
+        return ans;
+    }
+
+    void solve2(int n, int open, int closed, string s, vector<string> &a) {
+        if (open == n && closed == n) {
+            a.push_back(s);
+            return;
+        }
+        if (open < n) {
+            solve2(n, open + 1, closed, s + "(", a);
+        }
+        if (closed < open) {
+            solve2(n, open, closed + 1, s + ")", a);
+        }
+
+    }
+
+    vector<string> generateParenthesiss(int n) {
+        vector<string> a;
+        solve2(n, 0, 0, "", a);
+        return a;
+    }
+
+    ListNode *reverseLists(ListNode *head) {
+        ListNode *prev = NULL;
+        ListNode *curr = head;
+        while (curr != NULL) {
+            ListNode *forw = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = forw;
+        }
+        return prev;
+    }
+
+    bool checkInclusion(string s1, string s2) {
+        int m1 = s1.length();
+        int i = 0;
+        string str = s2.substr(i, m1);
+        sort(s1.begin(), s2.end());
+        while (str.length() == m1) {
+            str = s2.substr(i, m1);
+            sort(str.begin(), str.end());
+            if (str == s1) {
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
+    bool isValidd(string s) {
+        stack<char> st;
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == '{' || s[i] == '[' || s[i] == '(') {
+                st.push(s[i]);
+            } else if (st.empty() || (s[i] != ')' && st.top() == '(') || (s[i] != ']' && st.top() == '[') ||
+                       (s[i] != '}' && st.top() == '{')) {
+                return false;
+            } else {
+                st.pop();
+            }
+        }
+        return st.empty();
+    }
+
+//    ListNode *reverseList(ListNode *head) {
+//        ListNode *prev = NULL;
+//        ListNode *curr = head;
+//        while (curr != NULL) {
+//            ListNode *forward = curr->next;
+//            curr->next = prev;
+//            prev = curr;
+//            curr = forward;
+//        }
+//        return prev;
+//    }
+//1 1 1
 };
 
+class RecentCounter {
+public:
+    queue<int> a;
+
+    RecentCounter() {
+    }
+
+    int ping(int t) {
+
+        a.push(t);
+        while (a.front() < t - 3000) {
+            a.pop();
+        }
+        return a.size();
+    }
+
+    int maxDistToClosest(vector<int> &seats) {
+        int ans = 0;
+        int l, r;
+        for (int i = 0; i < seats.size(); i++) {
+            l = i;
+            r = i;
+            while (l >= 0 && seats[l] != 1) l--;
+            while (r < seats.size() && seats[r] != 1) r++;
+            if (l < 0) {
+                l = r;
+            }
+            if (r == seats.size()) {
+                r = l;
+            }
+            ans = max(ans, min(abs(l - i), abs(r - i)));
+
+        }
+        return ans;
+    }
+
+    vector<vector<int>> merge(vector<vector<int>> &intervals) {
+        int n = intervals.size();
+        if (n <= 1) {
+            return intervals;
+        }
+        sort(intervals.begin(), intervals.end());
+        vector<vector<int>> ans;
+        ans.push_back(intervals[0]);
+        for (int i = 1; i < n; i++) {
+            if (intervals[i][0] <= ans.back()[1]) {
+                ans.back()[1] = max(ans.back()[1], intervals[i][1]);
+            } else {
+                ans.push_back(intervals[i]);
+            }
+        }
+        return ans;
+    }
+
+    int trap(vector<int> &height) {
+        int ans = 0;
+        int n = height.size();
+        vector<int> pref(n);
+        vector<int> sub(n);
+        pref[0] = height[0];
+        for (int i = 1; i < n; i++) {
+            pref[i] = max(height[i], pref[i - 1]);
+        }
+        sub[n - 1] = height[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            sub[i] = max(height[i], sub[i + 1]);
+        }
+        for (int i = 0; i < n; i++) {
+            ans += min(pref[i], sub[i]) - height[i];
+        }
+        return ans;
+    }
+
+    vector<int> twoSum(vector<int> &nums, int target) {
+        unordered_map<int, int> aa;
+        int num;
+        for (int i = 0; i < nums.size(); i++) {
+            num = nums[i];
+            if (aa.find(target - num) != aa.end()) {
+                return {i, aa[target - num]};
+            }
+            aa[num] = i;
+        }
+        return {};
+    }
+
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> ans;
+        if (s.size() < p.size()) {
+            return ans;
+        }
+        vector<int> a(26);
+        vector<int> b(26);
+        for (auto c: p) {
+            b[c - 'a']++;
+        }
+        int i = 0, j = 0;
+        while (j < s.size()) {
+            a[s[j] - 'a']++;
+            if (j - i + 1 == p.size()) {
+                if (a == b)
+                    ans.push_back(i);
+            }
+            if (p.size() > j - i + 1) {
+                j++;
+            } else {
+                a[s[i] - 'a']--;
+                i++;
+                j++;
+            }
+        }
+        return ans;
+    }
+
+    int rand7();
+
+    int rand10() {
+        int n = rand7(), m = 7;
+        while (n > 5) {
+            m = n - 5;
+            n = rand7();
+        }
+        while (m == 7) m = rand7();
+        return (m % 2 ? 5 : 0) + n;
+    }
+
+    bool check(TreeNode *left, TreeNode *right) {
+        if (left == NULL || right == NULL) {
+            return left == right;
+        }
+        if (left->val != right->val) {
+            return false;
+        }
+        return check(left->left, right->right) && check(left->right, right->left);
+
+    }
+
+    bool isSymmetric(TreeNode *root) {
+        if (root == NULL) {
+            return true;
+        }
+        return check(root->left, root->right);
+    }
+
+    bool chck(TreeNode *root, long long l, long long r) {
+        if (root == NULL) {
+            return true;
+        }
+        if (root->val < r && root->val > l) {
+            return chck(root->left, l, root->val) && chck(root->right, root->val, r);
+        } else {
+            return false;
+        }
+    }
+
+    bool isValidBST(TreeNode *root) {
+        long long int min = -100000000000, max = 10000000000;
+        return chck(root, min, max);
+    }
+};
 
 int main() {
     cout << '\n';
@@ -910,4 +1273,6 @@ int main() {
     vector<string> nn = {"777", "7", "77", "77"};
     cout << Solution::numOfPairs(nn, "7777") << '\n';
     cout << Solution::missingNumber(c) << '\n';
+    vector<char> aaa = {'a', 'a', 'b', 'b', 'c', 'c', 'c'};
+    Solution::compress(aaa);
 }
