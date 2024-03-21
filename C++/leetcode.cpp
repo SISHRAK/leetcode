@@ -1655,16 +1655,214 @@ public:
         int n = numbers.size();
         int l = 0;
         int r = n - 1;
-        while(l <= r){
-            if(numbers[l] + numbers[r] == target){
-                return {l+1, r+1};
-            } else if(numbers[l] + numbers[r] > target){
+        while (l <= r) {
+            if (numbers[l] + numbers[r] == target) {
+                return {l + 1, r + 1};
+            } else if (numbers[l] + numbers[r] > target) {
                 r--;
-            } else{
+            } else {
                 l++;
             }
         }
         return {};
+    }
+
+    int removeDuplicates(vector<int> &nums) {
+        int j = 1;
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[j] = nums[i];
+                j++;
+            }
+        }
+        return j;
+    }
+
+    int findMin(vector<int> &nums) {
+        int n = nums.size();
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (nums[m] >= nums[r]) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return nums[l];
+    }
+
+    int rangeSumBST(TreeNode *root, int low, int high) {
+        if (!root) {
+            return 0;
+        }
+        int right = rangeSumBST(root->right, low, high);
+        int left = rangeSumBST(root->left, low, high);
+        if (root->val >= low && root->val <= high) {
+            return right + left + root->val;
+        }
+        return right + left;
+    }
+
+    vector<int> partitionLabels(string s) {
+        map<char, int> last;
+        vector<int> res;
+        for (int i = 0; i < s.size(); i++) {
+            last[s[i]] = i;
+        }
+        int edp = last[s[0]];
+        int start = 0;
+        while (start < s.size()) {
+            edp = last[s[start]];
+            int cnt = 0;
+            while (start <= edp) {
+                cnt++;
+                edp = max(edp, last[s[start]]);
+                start++;
+            }
+            res.push_back(cnt);
+        }
+        return res;
+    }
+
+    vector<int> productExceptSelf(vector<int> &nums) {
+        int n = nums.size();
+        vector<int> pref(n, 1);
+        vector<int> suf(n, 1);
+        for (int i = 1; i < n; i++) {
+            pref[i] = pref[i - 1] * nums[i - 1];
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            suf[i] = suf[i + 1] * nums[i + 1];
+        }
+        vector<int> ans(n);
+        for (int i = 0; i < n; i++) {
+            ans[i] = pref[i] * suf[i];
+        }
+        return ans;
+    }
+
+    int maxPathSum(TreeNode *root) {
+        int maxi = INT_MIN;
+        path(maxi, root);
+        return maxi;
+    }
+
+    int path(int &maxi, TreeNode *root) {
+        if (!root) {
+            return 0;
+        }
+        int l = max(path(maxi, root->left), 0);
+        int r = max(path(maxi, root->right), 0);
+        maxi = max(maxi, l + r + root->val);
+        return root->val + max(l, r);
+    }
+
+    bool checkSubarraySum(vector<int> &nums, int k) {
+        unordered_map<int, int> st;
+        st[nums[0] % k] = 1;
+        for (int i = 1; i < nums.size(); i++) {
+            nums[i] += nums[i - 1];
+            if (st[nums[i] % k] != 0) {
+                if (abs(st[nums[i] % k] - (i + 1)) > 1) {
+                    return 1;
+                }
+
+            } else {
+                st[nums[i] % k] = i + 1;
+            }
+            if (nums[i] % k == 0) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    string reverseWords(string s) {
+        string str = "";
+        string check = "";
+        int n = s.size();
+        for (int i = 0; i < n; i++) {
+            if (s[i] == ' ' || i == n - 1) {
+                if (i == n - 1) {
+                    check += s[i];
+                }
+                std::reverse(check.begin(), check.end());
+                str += check;
+                if (i != n - 1) {
+                    str += ' ';
+                }
+                check = "";
+            } else {
+                check += s[i];
+            }
+        }
+        return str;
+    }
+
+    string addStrings(string num1, string num2) {
+        int n = num1.size() - 1;
+        int m = num2.size() - 1;
+        int carry = 0;
+        string ans = "";
+        while (n >= 0 || m >= 0) {
+            int a = (n < 0) ? 0 : num1[n] - '0';
+            int b = (m < 0) ? 0 : num2[m] - '0';
+            int sum = a + b + carry;
+            ans += to_string(sum % 10);
+            carry = sum / 10;
+            m--, n--;
+
+        }
+        if (carry > 0) {
+            ans += to_string(carry);
+        }
+        std::reverse(ans.begin(), ans.end());
+        return ans;
+    }
+
+    bool isPalindrome(ListNode *head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while(fast->next != nullptr && fast->next->next != nullptr){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        ListNode* newHead = reverse(slow->next);
+        ListNode* first = head;
+        ListNode* second = newHead;
+        while(second != nullptr){
+            if(first->val != second->val){
+                return false;
+            }
+            first = first->next;
+            second = second->next;
+        }
+        return true;
+    }
+
+    ListNode *reverse(ListNode *head) {
+        if (head == nullptr || head->next == nullptr) {
+            return head;
+        }
+        ListNode *newHead = reverse(head->next);
+        ListNode *front = head->next;
+        front->next = head;
+        head->next = nullptr;
+        return newHead;
+    }
+
+    int firstUniqChar(string s) {
+        map<char, int> ss;
+        for(auto x: s){
+            ss[x]++;
+        }
+        for(int i = 0; i < s.size();i++){
+            if(ss[s[i]]==1){
+                return i;
+            }
+        }
+        return -1;
     }
 
 };
